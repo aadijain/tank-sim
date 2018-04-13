@@ -11,9 +11,11 @@ function Tank(x, y, h, colour, id = 0) {
   this.torque = 5;
   this.rotation = 0;
   this.colour = colour;
+  this.intersecting = false;
   this.vel = createVector(0, 0);
   this.thrust = createVector(0,0);
-  this.hitbox = [];
+  this.hitboxfull = [];
+  this.hitboxbody = [];
   
   this.update = function() {
     this.prevPos = this.pos.copy();
@@ -70,16 +72,18 @@ function Tank(x, y, h, colour, id = 0) {
     poly[1] = this.createRotatedVector(-a,-b);
     poly[2] = this.createRotatedVector(-a, b);
     poly[3] = this.createRotatedVector(a, b);
-    // poly[4] = this.createRotatedVector(a, 5); // cannon
-    // poly[5] = this.createRotatedVector(50, 5);
-    // poly[6] = this.createRotatedVector(50, -5);
-    // poly[7] = this.createRotatedVector(a, -5);
+    poly[4] = this.createRotatedVector(a, 5); // cannon
+    poly[5] = this.createRotatedVector(50, 5);
+    poly[6] = this.createRotatedVector(50, -5);
+    poly[7] = this.createRotatedVector(a, -5);
+    this.intersecting = false;
+    this.hitboxfull = poly.slice();
+    this.hitboxbody = poly.slice(0, 4);
     // beginShape();
     // fill(150,150,150,150);
-    // for(var i = 0; i < poly.length; i++)
+    // for(var i = 0; i < this.hitboxbody.length; i++)
     //   vertex(poly[i].x, poly[i].y);
     // endShape(CLOSE);
-    this.hitbox = poly.slice();
   }
 }
 

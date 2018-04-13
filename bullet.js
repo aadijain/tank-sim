@@ -2,9 +2,9 @@ function Bullet(tankdata) {
   this.tankdata = tankdata;
   this.mass = 1;
   this.startFrame = frameCount;
-  this.lifeSpan = 5*60;
-  this.alive = true;
-  this.pos = createVector(tankdata.pos.x + 52*cos(tankdata.heading), tankdata.pos.y + 52*sin(tankdata.heading));
+  this.lifeSpan = 10*60;
+  this.alive;
+  this.pos = createVector(tankdata.pos.x + 49*cos(tankdata.heading), tankdata.pos.y + 49*sin(tankdata.heading));
   this.prevPos = this.pos.copy();
   this.colour = tankdata.colour;
 

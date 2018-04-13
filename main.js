@@ -43,17 +43,16 @@ function draw() {
     else
       continue;
     
-    // collideBT(bullets1[i], tank1);
+    collideBT(bullets1[i], tank1);
     for (var j = 0; j < walls.length; j++)
-      collideBW(bullets1[i], walls[j]); 
-      // if(collideBW(bullets1[i], walls[j])) 
-        // j = -1;  //Multiple collisions per bullet
+      // collideBW(bullets1[i], walls[j]); 
+      if(collideBW(bullets1[i], walls[j])) 
+        j = -1;  //Multiple collisions per bullet
   }
   bullets1 = bullets2.slice();
   
-  bgcolor = 0;
   for (var i = 0; i < walls.length; i++) {
-    // collideTW(tank1, walls[i]);
+    collideTW(tank1, walls[i]);
     walls[i].render();
   }
   
@@ -61,13 +60,49 @@ function draw() {
   tank1.update();
 }
 
+
+function collideBT(bullet, tank) {
+  if (collideLinePoly(bullet.pos.x, bullet.pos.y, bullet.prevPos.x, bullet.prevPos.y, tank.hitboxbody)) {
+    background(100);
+  }
+}
+
+function collideTW(tank, wall){
+  var hit = collideLinePoly(wall.p1.x, wall.p1.y, wall.p2.x, wall.p2.y, tank.hitboxfull);
+  if (!hit)
+    return false;
+  tank.intersecting = true;
+    
+  var para, perp = p5.Vector.fromAngle(radians(-wall.theta));//one way wall
+  if (p5.Vector.dot(perp, tank.vel) < 0)
+    return true;
+    
+  perp = p5.Vector.fromAngle(radians(-wall.theta)); //reflect velocity
+  perp.mult(p5.Vector.dot(perp, tank.vel));
+  para = p5.Vector.sub(tank.vel, perp);
+  perp.mult(wall.e);
+  tank.vel = p5.Vector.sub(para, perp);
+
+  p5.Vector.fromAngle(radians(-wall.theta)); //align thrust
+  perp.mult(Math.abs(p5.Vector.dot(perp, tank.thrust)));
+  para = p5.Vector.sub(tank.thrust, perp);
+  perp.setMag(-1);
+  tank.thrust = p5.Vector.sub(para, perp);  
+
+  return true;
+}
+
+
 function collideBW(bullet, wall){
   var hit = collideLineLine(bullet.pos.x, bullet.pos.y, bullet.prevPos.x, bullet.prevPos.y, wall.p1.x, wall.p1.y, wall.p2.x, wall.p2.y, true);
-  if(!hit.x || !hit.y)
+  if (!hit.x || !hit.y)
     return false;
     
+  var perp = p5.Vector.fromAngle(radians(-wall.theta));  //walls are one way
+  if (p5.Vector.dot(perp, bullet.vel) < 0)
+    return false;
+
   //reflect position (excess penetration)
-  var perp = p5.Vector.fromAngle(radians(-wall.theta));  
   bullet.prevPos.x = hit.x
   bullet.prevPos.y = hit.y
   var px = p5.Vector.sub(bullet.prevPos, bullet.pos);
@@ -75,7 +110,6 @@ function collideBW(bullet, wall){
   bullet.pos.add(perp);
   
   //reflect velocity
-  perp.setMag(1);
   var perp = p5.Vector.fromAngle(radians(-wall.theta));  
   perp.setMag(p5.Vector.dot(perp, bullet.vel));
   var para = p5.Vector.sub(bullet.vel, perp);
@@ -90,7 +124,7 @@ function collideBW(bullet, wall){
 }
 
 function keyPressed() {
-  if (key == 'M' || key == ' '){
+  if ((key == 'M' || key == ' ') && !tank1.intersecting){
     bullets1.push(new Bullet(tank1));
   }
 }
