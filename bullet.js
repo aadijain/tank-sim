@@ -1,5 +1,5 @@
 function Bullet(tankdata) {
-  this.damage = 12;
+  this.damage = 45;
   this.tankdata = tankdata;
   this.mass = 1;
   this.startFrame = frameCount;

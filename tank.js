@@ -28,7 +28,7 @@ function Tank(x, y, h, colour, id = 0) {
     this.pos.x = constrain(this.pos.x, 0, width);
     this.pos.y = constrain(this.pos.y, 0, height);
     this.vel.mult(1 - (this.dampening/this.mass));
-    if(p5.Vector.dist(this.goal, this.pos) < 50) this.hp = 100;
+    if(p5.Vector.dist(this.goal, this.pos) < 100) this.hp = 100;
   }
 
   this.respawn = function() {
