@@ -63,15 +63,17 @@ function draw() {
 
 function collideBT(bullet, tank) {
   if (collideLinePoly(bullet.pos.x, bullet.pos.y, bullet.prevPos.x, bullet.prevPos.y, tank.hitboxbody)) {
-    background(100);
+    // background(100);
   }
 }
 
 function collideTW(tank, wall){
-  var hit = collideLinePoly(wall.p1.x, wall.p1.y, wall.p2.x, wall.p2.y, tank.hitboxfull);
+  var hit1 = collideLinePoly(wall.p1.x, wall.p1.y, wall.p2.x, wall.p2.y, tank.hitboxbody);
+  var hit2 = collideLinePoly(wall.p1.x, wall.p1.y, wall.p2.x, wall.p2.y, tank.hitboxgun);
+  var hit = hit1 || hit2;
   if (!hit)
     return false;
-  tank.intersecting = true;
+  tank.intersecting = hit2;
     
   var para, perp = p5.Vector.fromAngle(radians(-wall.theta));//one way wall
   if (p5.Vector.dot(perp, tank.vel) < 0)

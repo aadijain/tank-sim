@@ -72,17 +72,17 @@ function Tank(x, y, h, colour, id = 0) {
     poly[1] = this.createRotatedVector(-a,-b);
     poly[2] = this.createRotatedVector(-a, b);
     poly[3] = this.createRotatedVector(a, b);
-    poly[4] = this.createRotatedVector(a, 5); // cannon
+    poly[4] = this.createRotatedVector(0, 5); // gun
     poly[5] = this.createRotatedVector(50, 5);
     poly[6] = this.createRotatedVector(50, -5);
-    poly[7] = this.createRotatedVector(a, -5);
+    poly[7] = this.createRotatedVector(0, -5);
     this.intersecting = false;
-    this.hitboxfull = poly.slice();
+    this.hitboxgun = poly.slice(4, 8);
     this.hitboxbody = poly.slice(0, 4);
     // beginShape();
     // fill(150,150,150,150);
-    // for(var i = 0; i < this.hitboxbody.length; i++)
-    //   vertex(poly[i].x, poly[i].y);
+    // for(var i = 0; i < this.hitboxgun.length; i++)
+    //   vertex(this.hitboxgun[i].x, this.hitboxgun[i].y);
     // endShape(CLOSE);
   }
 }
