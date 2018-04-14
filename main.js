@@ -4,6 +4,7 @@ var gameend, winner, timeout, handle;
 var bgcolor;
 
 function setup() {
+  colorMode(HSB, 100, 100, 100);
   createCanvas(windowWidth, windowHeight);
   rectMode(CENTER);
   angleMode(DEGREES);
@@ -13,7 +14,7 @@ function setup() {
 function newGame(){
   walls = randmap().slice();
   bullets1 = []; bullets2 = [];
-  tank1 = new Tank(40, height / 2, 0, 'green', 1);
+  tank1 = new Tank(40, height / 2, 0, 33, 1);
   puck = new Puck(width/2, height/2);
 }
 
@@ -28,39 +29,35 @@ function draw() {
   if (keyIsDown(UP_ARROW))
     tank1.setBoost(1);
   else if (keyIsDown(DOWN_ARROW)) 
-    tank1.setBoost(-1);
-    
+    tank1.setBoost(-1);    
   if (keyIsDown(LEFT_ARROW))
     tank1.setRotation(-1);
   else if (keyIsDown(RIGHT_ARROW))
     tank1.setRotation(1);  
 
+  //Bullet Collisions
   bullets2 = [];
   for (var i = 0; i < bullets1.length; i++) {
     bullets1[i].render();
     bullets1[i].update();
-    
     if(bullets1[i].alive)
       bullets2.push(bullets1[i]);
     else
       continue;
-    
     collideBT(bullets1[i], tank1);
     for (var j = 0; j < walls.length; j++)
-      // collideBW(bullets1[i], walls[j]); 
       if(collideBW(bullets1[i], walls[j])) 
         j = -1;  //Multiple collisions per bullet
   }
   bullets1 = bullets2.slice();
   
-  collideTP(tank1, puck);
-  
+  //Tank, Puck and Wall Collisions
+  collideTP(tank1, puck);  
   for (var i = 0; i < walls.length; i++) {
     collideTW(tank1, walls[i]);
     collidePW(puck, walls[i]);
     walls[i].render();
-  }
-  
+  }  
   puck.render();
   tank1.render();
   puck.update();
@@ -83,9 +80,12 @@ function collideBT(bullet, tank) {
     var dir = bullet.vel;
     dir.mult(bullet.mass / tank.mass);
     tank.vel.add(dir);
+    tank.hp -= bullet.damage;
+    tank.respawn();
     bullet.lifeSpan = 0;
   }
 }
+
 
 function collidePW(puck, wall) {
   var hit = collideLineCircle(wall.p1.x, wall.p1.y, wall.p2.x, wall.p2.y, puck.pos.x, puck.pos.y, puck.radius);
@@ -104,8 +104,6 @@ function collidePW(puck, wall) {
 
   return true;
 }
-
-
 
 
 function collideTW(tank, wall){
@@ -165,6 +163,7 @@ function collideBW(bullet, wall){
   pop();
   return true;
 }
+
 
 function keyPressed() {
   if ((key == 'M' || key == ' ') && !tank1.intersecting){

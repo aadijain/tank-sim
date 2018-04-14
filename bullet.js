@@ -1,4 +1,5 @@
 function Bullet(tankdata) {
+  this.damage = 12;
   this.tankdata = tankdata;
   this.mass = 1;
   this.startFrame = frameCount;
@@ -22,7 +23,7 @@ function Bullet(tankdata) {
   
   this.render = function() {
     push();
-    stroke(this.colour);
+    stroke(this.colour, 100, 100);
     strokeWeight(12);
     point(this.pos.x, this.pos.y);
     pop();

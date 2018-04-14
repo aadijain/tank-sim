@@ -1,7 +1,9 @@
 function Tank(x, y, h, colour, id = 0) {
   this.id = id;
   this.ctr = 0;
+  this.hp = 100;
   this.pos = createVector(x, y);
+  this.goal = createVector(x, y);
   this.prevPos = this.pos.copy()
   this.heading = h;
   this.prevHeading = this.heading;
@@ -26,6 +28,16 @@ function Tank(x, y, h, colour, id = 0) {
     this.pos.x = constrain(this.pos.x, 0, width);
     this.pos.y = constrain(this.pos.y, 0, height);
     this.vel.mult(1 - (this.dampening/this.mass));
+    if(p5.Vector.dist(this.goal, this.pos) < 50) this.hp = 100;
+  }
+
+  this.respawn = function() {
+    if(this.hp > 10) return;
+    this.hp = 100;
+    this.pos = this.goal.copy();
+    // this.vel.mult(0);
+    // this.thrust.mult(0);
+    // this.rotation = 0;
   }
   
   this.setBoost = function(k) {
@@ -50,13 +62,20 @@ function Tank(x, y, h, colour, id = 0) {
   
   this.render = function() {
     push();
+    translate(this.goal.x, this.goal.y);
+    stroke(this.colour, 100, 100);
+    strokeWeight(5);
+    line(-18, 0, 18, 0);
+    line(0, -18, 0, 18);
+    pop();
+    push();
     translate(this.pos.x, this.pos.y);
     rotate(this.heading);
-    fill(this.colour);
+    fill(this.colour, 100, this.hp);
     rect(0, 0, 60, 40);
     rect(0, 0, 20, 20);
     rect(25, 0, 50, 8);
-    pop();
+    pop();  
   }
 
   this.createRotatedVector = function(px, py) {
