@@ -1,19 +1,37 @@
 function randmap(){
-    return map1();   
+    return map0();   
 }
 
 function map0() {
     var map = [];
-    map.push(new Wall(width / 3, height / 3, 135, 200));
-    map.push(new Wall(2 * width / 3, height / 3, 45, 200));
-    map.push(new Wall(width / 3, 2 * height / 3, -135, 200));
-    map.push(new Wall(2 * width / 3, 2 * height / 3, -45, 200));
+    map.push(new Wall(width / 2, 0, 90, width / 2));
+    map.push(new Wall(width / 2, height, -90, width / 2));
+    map.push(new Wall(width, height / 2, 0, height / 2));
+    map.push(new Wall(0, height / 2, 180, height / 2));
+    for (var t = -45; t <= 45; t += 10) {
+        p = p5.Vector.fromAngle(radians(t));
+        p.setMag(100);
+        map.push(new Wall(p.x, height / 2 - p.y, t, 10));
+        map.push(new Wall(width - p.x, height / 2 + p.y, 180 + t, 10));
+    }
+    for (var t = 0; t <= 90; t += 10) {
+        p = p5.Vector.fromAngle(radians(t));
+        p.setMag(100);
+        map.push(new Wall(width - 100 + p.x, 100 - p.y, t, 10));
+        map.push(new Wall(100 - p.x, 100 - p.y, 180 -t, 10));
+        map.push(new Wall(100 - p.x, height - 100 + p.y, 180 + t, 10));
+        map.push(new Wall(width - 100 + p.x, height - 100 + p.y, - t, 10));
+    }
     return map;  
 }
 
 function map1() { //Circle
     var map = [];
     var r = 200;
+    map.push(new Wall(width / 2, 0, 90, width / 2));
+    map.push(new Wall(width / 2, height, -90, width / 2));
+    map.push(new Wall(width, height / 2, 0, height / 2));
+    map.push(new Wall(0, height / 2, 180, height / 2));
     map.push(new Wall(width/4, height/2, 180, 300));
     for(var t = -160; t < 160; t += 10){
         var p = p5.Vector.fromAngle(radians(t));

@@ -13,14 +13,16 @@ function setup() {
 function newGame(){
   walls = randmap().slice();
   bullets1 = []; bullets2 = [];
-  tank1 = new Tank(width/2, height/2, 0, 'green', 1);
+  tank1 = new Tank(40, height / 2, 0, 'green', 1);
+  puck = new Puck(width/2, height/2);
 }
 
 function draw() {
   // fr.html(floor(frameRate()));
   background(0);  
   
-  tank1.render();
+  // puck.render();
+  // tank1.render();
   tank1.collisionBox();  
   
   if (keyIsDown(UP_ARROW))
@@ -51,21 +53,60 @@ function draw() {
   }
   bullets1 = bullets2.slice();
   
+  collideTP(tank1, puck);
+  
   for (var i = 0; i < walls.length; i++) {
     collideTW(tank1, walls[i]);
+    collidePW(puck, walls[i]);
     walls[i].render();
   }
   
-  // collideTT()
+  puck.render();
+  tank1.render();
+  puck.update();
   tank1.update();
+}
+
+function collideTP(tank, puck) {
+  if (collideCirclePoly(puck.pos.x, puck.pos.y, puck.radius, tank.hitboxbody)) {
+    var dir = p5.Vector.sub(puck.pos, tank.pos);
+    dir.setMag(tank.vel.mag() * tank.mass/ puck.mass);
+    puck.vel.add(dir);
+    dir.setMag(puck.vel.mag() * puck.mass / tank.mass);
+    tank.vel.sub(dir);
+  }
 }
 
 
 function collideBT(bullet, tank) {
   if (collideLinePoly(bullet.pos.x, bullet.pos.y, bullet.prevPos.x, bullet.prevPos.y, tank.hitboxbody)) {
-    // background(100);
+    var dir = bullet.vel;
+    dir.mult(bullet.mass / tank.mass);
+    tank.vel.add(dir);
+    bullet.lifeSpan = 0;
   }
 }
+
+function collidePW(puck, wall) {
+  var hit = collideLineCircle(wall.p1.x, wall.p1.y, wall.p2.x, wall.p2.y, puck.pos.x, puck.pos.y, puck.radius);
+  if (!hit)
+    return false;
+
+  var para, perp = p5.Vector.fromAngle(radians(-wall.theta));//one way wall
+  if (p5.Vector.dot(perp, puck.vel) < 0)
+    return true;
+
+  perp = p5.Vector.fromAngle(radians(-wall.theta)); //reflect velocity
+  perp.mult(p5.Vector.dot(perp, puck.vel));
+  para = p5.Vector.sub(puck.vel, perp);
+  perp.mult(1);
+  puck.vel = p5.Vector.sub(para, perp);
+
+  return true;
+}
+
+
+
 
 function collideTW(tank, wall){
   var hit1 = collideLinePoly(wall.p1.x, wall.p1.y, wall.p2.x, wall.p2.y, tank.hitboxbody);
@@ -88,7 +129,7 @@ function collideTW(tank, wall){
   p5.Vector.fromAngle(radians(-wall.theta)); //align thrust
   perp.mult(Math.abs(p5.Vector.dot(perp, tank.thrust)));
   para = p5.Vector.sub(tank.thrust, perp);
-  perp.setMag(-1);
+  perp.setMag(-10);
   tank.thrust = p5.Vector.sub(para, perp);  
 
   return true;

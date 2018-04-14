@@ -5,8 +5,8 @@ function Tank(x, y, h, colour, id = 0) {
   this.prevPos = this.pos.copy()
   this.heading = h;
   this.prevHeading = this.heading;
-  this.mass = 10;
-  this.dampening = 0.97;
+  this.mass = 10.0;
+  this.dampening = 0.3;
   this.power = 3;
   this.torque = 5;
   this.rotation = 0;
@@ -25,16 +25,17 @@ function Tank(x, y, h, colour, id = 0) {
     this.pos.add(this.vel);
     this.pos.x = constrain(this.pos.x, 0, width);
     this.pos.y = constrain(this.pos.y, 0, height);
-    this.vel.mult(this.dampening);
+    this.vel.mult(1 - (this.dampening/this.mass));
   }
   
   this.setBoost = function(k) {
     this.thrust = p5.Vector.fromAngle(radians(this.heading));
-    this.thrust.mult(k * this.power / this.mass);
+    this.thrust.mult(k * this.power);
   }
   
   this.boost = function() {
-    this.vel.add(this.thrust);
+    var acc = p5.Vector.div(this.thrust, this.mass);
+    this.vel.add(acc);
     this.thrust.mult(0);
   }
   
