@@ -17,7 +17,7 @@ function newGame(){
   walls = randmap().slice();
   bullets1 = []; bullets2 = [];
   tank1 = new Tank(40, height / 2, 0, 33, 1);
-  tank2 = new Tank(width - 40, height / 2, 180, 0, 1);
+  tank2 = new Tank(width - 40, height / 2, 180, 0, 2);
   puck = new Puck(width/2, height/2);
 }
 
@@ -66,6 +66,7 @@ function draw() {
   //Tank, Puck and Wall Collisions
   collideTP(tank1, puck);  
   collideTP(tank2, puck);  
+  collideTT(tank2, tank1);  
   collideTT(tank1, tank2);  
   for (var i = 0; i < walls.length; i++) {
     collideTW(tank1, walls[i]);
@@ -81,6 +82,19 @@ function draw() {
   tank2.update();
 }
 
+// function explosion(x, y) {
+//   push();
+//   strokeWeight(10);
+//   stroke(255);
+//   ellipse(x, y, frameCount % 10, frameCount % 10);
+//   pop();
+// }
+
+// function explode(x, y) {
+//   setInterval(explosion
+// }
+
+
 function collideTP(tank, puck) {
   if (collideCirclePoly(puck.pos.x, puck.pos.y, puck.radius, tank.hitboxbody)) {
     puck.heading += random(-45, 45);
@@ -95,10 +109,10 @@ function collideTP(tank, puck) {
 function collideTT(tank1, tank2) {
   if (collidePolyPoly(tank1.hitboxbody, tank2.hitboxbody)) {
     var dir = p5.Vector.sub(tank1.pos, tank2.pos);
-    dir.setMag(1.2 * tank2.vel.mag() * tank2.mass / tank1.mass);
+    dir.setMag(1 * tank2.vel.mag() * tank2.mass / tank1.mass);
     tank1.vel.add(dir);
-    dir.setMag(1.2 * tank1.vel.mag() * tank1.mass / tank2.mass);
-    tank2.vel.sub(dir);
+    // dir.setMag(1.2 * tank1.vel.mag() * tank1.mass / tank2.mass);
+    // tank2.vel.sub(dir);
   }
 }
 

@@ -1,10 +1,10 @@
 function Puck(x, y) {
-    this.mass = 5;
+    this.mass = 10;
     this.radius = 70;
     this.heading = 0;
     this.pos = createVector(x, y);
     this.prevPos = this.pos.copy()
-    this.dampening = 0.05;
+    this.dampening = 0.2;
     this.rotation = 0;
     this.colour = 70;
     this.vel = createVector(0, 0);

@@ -1,5 +1,5 @@
 function Bullet(tankdata) {
-  this.damage = 45;
+  this.damage = 30;
   this.tankdata = tankdata;
   this.mass = 1;
   this.startFrame = frameCount;
@@ -12,7 +12,7 @@ function Bullet(tankdata) {
   this.vel = p5.Vector.fromAngle(radians(tankdata.heading));
   this.vel.mult(12);
   tankdata.ctr++;
-  
+
   this.update = function() {
     this.prevPos = this.pos.copy();
     this.pos.add(this.vel);
